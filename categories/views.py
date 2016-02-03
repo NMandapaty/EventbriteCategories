@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from . import services
 
-# Create your views here.
-
 def index(request):
+    """
+    Default route which returns a page where users can select their 
+    category choices for the search.
+    """
     if request.method == "GET":
         cats, error = services.get_categories()
         if error:
@@ -14,6 +16,9 @@ def index(request):
                       context={'categories': cats})
 
 def events(request):
+    """
+    Route used for any search requests, including pagination.
+    """
     if request.method == "GET":
         choices = [
             request.GET.get('c1', ''),
