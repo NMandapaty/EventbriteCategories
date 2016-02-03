@@ -18,7 +18,7 @@ def get_categories():
 Returns a list of event objects for the given page, as well as the total number
 of pages
 '''
-def get_events(page=1, *categories):
+def get_events(categories, page=1):
     params = {
         'token': TOKEN,
         'categories': ','.join(categories),
@@ -30,7 +30,4 @@ def get_events(page=1, *categories):
 
     #only keep relevant fields
     events = [Event(e) for e in r['events']]
-    return {
-        'events': events,
-        'page_count': page_count
-    }
+    return (events, page_count)

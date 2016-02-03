@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Eventbrite categories event search</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+        <!-- Bootstrap select -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/css/bootstrap-select.min.css">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/js/bootstrap-select.min.js"></script>
+
+        <script>
+$(function() {
+  var curr_page = {{current_page}},
+      page_count = {{page_count}};
+  
+  //remove page parameter, wherever it is
+  var params = window.location.search;
+  var regex = /&?page=\d/;
+  params.replace(regex, '');
+
+  //and add it to end
+  var url = '/events' + params + '&page=';
+
+  //construct html to go inside .pagination based on current page
+  var HTML = "";
+  var cls, href;
+
+  //previous page label
+  if (curr_page == 1) {
+    cls = ' class = "disabled"';
+    href = '#';
+  } else { 
+    cls = '';
+    href = url+(curr_page-1);
+  }
+
+  HTML += '<li' + cls + '>';
+  HTML += '<a href="' + href + '" aria-label="Previous"';
+  HTML += '<span aria-hidden="true">&laquo;</span></a></li>\n';
+
+  //numbered page labels
+  var startnum, endnum;
+  if (curr_page <= 3) {
+    startnum = 1;
+    endnum = 5;
+  } else if (curr_page >= page_count - 2) {
+    startnum = page_count - 4;
+    endnum = page_count;
+  } else {
+    startnum = curr_page - 2;
+    endnum = curr_page + 2;
+  }
+
+  for (var i = startnum; i <= endnum; i++) {
+    if (i == curr_page) {
+      cls = ' class = "disabled"';
+      href = '#';
+    } else { 
+      cls = '';
+      href = url+i;
+    }
+    HTML += '<li' + cls + '><a href="' + href + '">' + i + '</a></li>\n';
+  }
+
+  //next page label
+  if (curr_page == page_count) {
+    cls = ' class = "disabled"';
+    href = '#';
+  } else { 
+    cls = '';
+    href = url+(curr_page+1);
+  }
+
+  HTML += '<li' + cls + '>';
+  HTML += '<a href="' + href + '" aria-label="Next"';
+  HTML += '<span aria-hidden="true">&raquo;</span></a></li>\n';
+
+
+  $('.pagination').html(HTML);
+
+});
+
+        </script>
+    </head>
+    <body>
+        <div id="events">
+            {% for e in events %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><a href="{{e.url}}">{{e.name}}</a></h3>
+                </div>
+                <div class="panel-body">
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="{{e.url}}">
+                        <img class="media-object" src="{{e.logo}}">
+                      </a>
+                    </div>
+                    <div class="media-body">
+                      <p> {{e.description|safe}} </p>
+                      <p> {{e.start_time}} - {{e.end_time}}</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+            <nav>
+              <ul class="pagination"> </ul>
+            </nav>
+        </div>
+    </body>
+</html>

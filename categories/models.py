@@ -17,14 +17,6 @@ class Category():
         self.name = catObject['name']
         self.shortname = catObject['short_name']
 
-    def toJSON(self):
-        obj = {
-            'id': self.id,
-            'name': self.name,
-            'shortname': self.shortname
-        }
-        return json.dumps(obj)
-
     def __str__(self):
         return self.name
 
@@ -32,26 +24,15 @@ class Event():
     def __init__(self, eventObject):
         e = eventObject
         self.id = e['id']
-        self.name = e['name']['html']
+        self.name = e['name']['text']
         self.description = e['description']['html']
         self.url = e['url']
-        self.vanity_url = e['vanity_url']
-        self.logo = e['logo']
+        #some events do not have logos
+        logo = e.get('logo', None)
+        if logo:
+            self.logo = logo['url']
         self.start_time = e['start']
         self.end_time = e['end']
-
-    def toJSON(self):
-        obj = {
-            'id': self.id,
-            'name': self.name,
-            'description': self.descirption,
-            'url': self.url,
-            'vanity_url': self.vanity_url,
-            'logo': self.logo,
-            'start_time': self.start_time,
-            'end_time': self.end_time
-        }
-        return json.dumps(obj)
 
     def __str__(self):
         return self.name
